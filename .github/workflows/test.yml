@@ -1,0 +1,65 @@
+name: Test
+
+# Installs the cask on a clean macOS runner the way the README says, then checks what Homebrew
+# put in place: the download mark and the README's xattr line, the app's signature and version,
+# `calm` on PATH, Calm starting and answering it, and the uninstall.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # This checkout, tapped under the name users install from.
+      - name: Tap
+        run: |
+          brew tap jinhuang712/tap "$GITHUB_WORKSPACE"
+          brew trust --cask jinhuang712/tap/calm
+
+      - name: Style and audit
+        run: |
+          brew style --cask jinhuang712/tap/calm
+          brew audit --cask --strict --online jinhuang712/tap/calm
+
+      - name: Install
+        run: brew install --cask jinhuang712/tap/calm
+
+      - name: Check
+        run: |
+          app=/Applications/Calm.app
+          version="$(brew info --cask --json=v2 jinhuang712/tap/calm | jq -r '.casks[0].version')"
+          if ! xattr -r -l "$app" | grep -q com.apple.quarantine; then
+            echo "::warning::Homebrew left no download mark on Calm.app; the README's xattr line may no longer be needed"
+          fi
+          xattr -dr com.apple.quarantine "$app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+          built="$(defaults read "$app/Contents/Info" CFBundleShortVersionString)"
+          calm="$(brew --prefix)/bin/calm"
+          cli="$("$calm" --version)"
+          if [[ "$built" != "$version" || "$cli" != "calm $version" ]]; then
+            echo "::error::the cask is $version, the app says $built and calm says '$cli'"
+            exit 1
+          fi
+          # `calm list` starts the Calm it came with when none answers; a first launch on a fresh
+          # machine can take longer than its 5 seconds, so it asks again for up to a minute.
+          for _ in $(seq 12); do
+            if "$calm" list; then
+              listed=1
+              break
+            fi
+            sleep 5
+          done
+          pkill -x Calm || true
+          [[ "${listed:-}" == 1 ]] || { echo "::error::Calm didn't start and answer"; exit 1; }
+
+      - name: Uninstall
+        run: |
+          brew uninstall --cask calm
+          [[ ! -e /Applications/Calm.app && ! -e "$(brew --prefix)/bin/calm" ]]
