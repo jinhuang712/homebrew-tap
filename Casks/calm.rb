@@ -10,7 +10,7 @@ cask "calm" do
   homepage "https://github.com/jinhuang712/calm"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :tahoe"
+  depends_on macos: :tahoe
 
   app "Calm.app"
   binary "#{appdir}/Calm.app/Contents/Resources/bin/calm"
