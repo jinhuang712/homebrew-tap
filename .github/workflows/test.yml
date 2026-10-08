@@ -30,7 +30,9 @@ jobs:
       - name: Style and audit
         run: |
           brew style --cask jinhuang712/tap/calm
-          brew audit --cask --strict --online jinhuang712/tap/calm
+          # Calm's releases before 1.0 are GitHub pre-releases on purpose; Homebrew's own list
+          # takes none, but that is its policy, not a fault in this cask.
+          brew audit --cask --strict --online --except github_prerelease_version jinhuang712/tap/calm
 
       - name: Install
         run: brew install --cask jinhuang712/tap/calm
