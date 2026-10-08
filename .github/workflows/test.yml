@@ -44,7 +44,7 @@ jobs:
           if ! xattr -r -l "$app" | grep -q com.apple.quarantine; then
             echo "::warning::Homebrew left no download mark on Calm.app; the README's xattr line may no longer be needed"
           fi
-          xattr -dr com.apple.quarantine "$app"
+          /usr/bin/xattr -dr com.apple.quarantine "$app"
           codesign --verify --deep --strict --verbose=2 "$app"
           built="$(defaults read "$app/Contents/Info" CFBundleShortVersionString)"
           calm="$(brew --prefix)/bin/calm"

@@ -25,11 +25,12 @@ cask "calm" do
   ]
 
   # Calm isn't signed with a Developer ID yet, so macOS keeps Homebrew's download mark on it and
-  # won't open it. The cask leaves taking the mark off to you, as Homebrew asks.
+  # won't open it. The cask leaves taking the mark off to you, as Homebrew asks. /usr/bin/xattr by
+  # path: Homebrew's own python `xattr` package, when installed, comes first and has no -r.
   caveats <<~EOS
     Calm isn't signed by Apple yet, so macOS won't open it as downloaded. After each
     install or upgrade, run once:
-      xattr -dr com.apple.quarantine #{appdir}/Calm.app
+      /usr/bin/xattr -dr com.apple.quarantine #{appdir}/Calm.app
     macOS then asks again for access to Desktop, Documents and Downloads.
 
     After an upgrade, restart a running Calm (Calm → Restart Calm); your shells stay.
