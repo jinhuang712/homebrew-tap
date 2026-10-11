@@ -1,8 +1,8 @@
 # Calm Terminal (https://github.com/jinhuang712/calm). Calm's release workflow writes the
 # version and sha256 here when it publishes a release.
 cask "calm" do
-  version "0.1.0"
-  sha256 "e865b077404a3b37dfce60b1f26f086a946ac3eff5f3c3d97db466b0f6abe325"
+  version "0.1.1"
+  sha256 "350afb3e38a4c2cc9d7360cf79f87c49bf1d1171a90558f6821c56ab4be087d2"
 
   url "https://github.com/jinhuang712/calm/releases/download/v#{version}/Calm-#{version}.dmg"
   name "Calm Terminal"
