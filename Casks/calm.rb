@@ -1,8 +1,8 @@
 # Calm Terminal (https://github.com/jinhuang712/calm). Calm's release workflow writes the
 # version and sha256 here when it publishes a release.
 cask "calm" do
-  version "0.1.1"
-  sha256 "350afb3e38a4c2cc9d7360cf79f87c49bf1d1171a90558f6821c56ab4be087d2"
+  version "0.1.2"
+  sha256 "5220c7d369333c03b994f1335ab7bab90363edd887fd303852532b14f641c56c"
 
   url "https://github.com/jinhuang712/calm/releases/download/v#{version}/Calm-#{version}.dmg"
   name "Calm Terminal"
@@ -10,7 +10,7 @@ cask "calm" do
   homepage "https://github.com/jinhuang712/calm"
 
   depends_on arch: :arm64
-  depends_on macos: :tahoe
+  depends_on macos: :sonoma
 
   app "Calm.app"
   binary "#{appdir}/Calm.app/Contents/Resources/bin/calm"
